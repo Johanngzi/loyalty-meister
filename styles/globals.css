@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Default tab text color */
+.tab {
+  color: black;
+}
+
+/* Selected tab text color */
+.tab[data-selected="true"] {
+  color: theme('colors.primary');
+  font-weight: theme('fontWeight.bold');
+}
