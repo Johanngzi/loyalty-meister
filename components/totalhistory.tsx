@@ -13,7 +13,7 @@ export default function Totalhistory() {
       {/* Overflown card with number */}
       {pathname === "/prizes-and-cash" && (
         <div className="relative z-50 pb-1">
-          <div className="absolute top-[-50px] left-[50%] transform -translate-x-[50%] flex flex-col items-center justify-center w-[24rem] h-[134px] bg-white text-black rounded-3xl font-bold shadow-lg">
+          <div className="absolute top-[-50px] left-[50%] transform -translate-x-[50%] flex flex-col items-center justify-center w-[383px] h-[134px] bg-white text-black rounded-3xl font-bold shadow-lg">
             <div className="text-6xl">$335.99</div>
             <h5 className="text-sm tracking-tight text-gray-400 mt-2">
               your account
@@ -30,7 +30,7 @@ export default function Totalhistory() {
       {/* First Card */}
       <Card
         isFooterBlurred
-        className="w-full h-[180px] col-span-12 sm:col-span-7 flex flex-col justify-between mb-6" // Added mb-6 for margin-bottom
+        className="w-[383px] h-[193px] col-span-12 sm:col-span-7 flex flex-col justify-between mb-6" // Added mb-6 for margin-bottom
       >
         {/* Card Header */}
         <CardHeader className="flex items-center justify-between px-6 pb-2 pt-7 w-full">
@@ -84,7 +84,7 @@ export default function Totalhistory() {
       {/* Second Card */}
       <Card
         isFooterBlurred
-        className="w-full h-[180px] col-span-12 sm:col-span-7 flex flex-col justify-between mb-6" // Added mb-6 for margin-bottom
+        className="w-[383px] h-[193px] col-span-12 sm:col-span-7 flex flex-col justify-between mb-6" // Added mb-6 for margin-bottom
       >
         {/* Card Header */}
         <CardHeader className="flex items-center justify-between px-6 pb-2 pt-7 w-full">
@@ -132,7 +132,7 @@ export default function Totalhistory() {
       {/* Third Card */}
       <Card
         isFooterBlurred
-        className="w-full h-[180px] col-span-12 sm:col-span-7 flex flex-col justify-between mb-6" // Added mb-6 for margin-bottom
+        className="w-[383px] h-[193px] col-span-12 sm:col-span-7 flex flex-col justify-between mb-6" // Added mb-6 for margin-bottom
       >
         {/* Card Header */}
         <CardHeader className="flex items-center justify-between px-6 pb-2 pt-7 w-full">

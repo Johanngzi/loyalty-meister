@@ -53,26 +53,28 @@ const LatestGameBottomSheet = () => {
     <div>
       {/* Bottom Sheet */}
       <div
-        className={`fixed bottom-0 left-0 w-full bg-white p-6 rounded-t-3xl rounded-b-2xl shadow-lg transition-all duration-300 ease-in-out transform ${
+        className={`fixed bottom-0 left-0 w-full bg-white p-3 rounded-t-3xl rounded-b-2xl shadow-lg transition-all duration-300 ease-in-out transform ${
           isOpen
-            ? "h-[13vh] translate-y-0"
+            ? "h-[124px] translate-y-0"
             : isCollapsed
-              ? "h-[5vh] translate-y-[30%]"
-              : "h-[20vh] translate-y-[32%]"
+              ? "h-[25px] translate-y-[80%]"
+              : "h-[1600px] translate-y-[92%]"
         }`}
         style={dragging ? { transform: `translateY(${offset}px)` } : {}}
         onTouchEnd={handleTouchEnd}
         onTouchMove={handleTouchMove}
         onTouchStart={handleTouchStart}
       >
-        <Card className="w-full rounded-none shadow-sm bg-white">
-          <CardHeader className="justify-between">
-            <div className="flex gap-5">
+        <Card className="w-full shadow-sm bg-white h-[124px]">
+          <CardHeader className="justify-between z">
+            <div className="flex gap-5 justify-start">
               <div className="flex flex-col gap-1 items-start justify-center pb-4">
                 <h5 className="text-2xl tracking-tight text-default-400">
                   latest game
                 </h5>
-                <h4 className="text-3xl text-black font-bold pb-3">Leaderboards</h4>
+                <h4 className="text-3xl text-black font-bold pb-3">
+                  Leaderboards
+                </h4>
               </div>
             </div>
             <Button

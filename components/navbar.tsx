@@ -116,9 +116,9 @@ export const Navbar = () => {
           <div
             className={`absolute ${
               pathname === "/"
-                ? "justify-center"
+                ? "left-2" // Align to the left on the homepage
                 : pathname === "/prizes-and-cash" || pathname === "/myrewards"
-                  ? "left-[50%] transform -translate-x-[50%]"
+                  ? "left-[50%] transform -translate-x-[50%]" // Centering on other pages
                   : "left-1/2 transform -translate-x-1/2"
             }`}
           >

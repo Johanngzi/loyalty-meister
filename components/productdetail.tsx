@@ -60,7 +60,7 @@ export default function ProductDetail() {
       </div>
 
       <div
-        className={`fixed bottom-0 left-0 w-full bg-black p-6 rounded-t-3xl shadow-lg transition-all duration-300 ease-in-out transform z-[100] ${
+        className={`fixed bottom-0 left-0 w-full bg-black p-3 rounded-t-3xl shadow-lg transition-all duration-300 ease-in-out transform z-[100] ${
           isOpen
             ? "h-[461px] translate-y-0"
             : isCollapsed
@@ -77,12 +77,13 @@ export default function ProductDetail() {
             <div className="flex gap-5">
               <Avatar
                 isBordered
+                className="h-[62px] w-[62px] rounded-3xl"
                 radius="full"
                 size="md"
                 src="https://i.pinimg.com/236x/7a/53/b6/7a53b6ae10173f474bf201c41e0feea3.jpg"
               />
-              <div className="flex flex-col gap-1 items-start justify-center">
-                <h4 className="text-large font-bold">Starbucks</h4>
+              <div className="flex flex-col  items-start justify-center">
+                <h4 className="text-3xl font-bold leading-[1.1]">Starbucks</h4>
                 {!isCollapsed && (
                   <h5 className="text-small tracking-tight text-default-400">
                     Manhattan Avenue
@@ -127,15 +128,15 @@ export default function ProductDetail() {
 
           {isOpen && (
             <>
-              <CardBody className="space-y-4">
-                <Card className="rounded-3xl shadow-sm bg-gray-900 text-white w-[384] h-[82px] mt-[10px]">
+              <CardBody className="space-y-6">
+                <Card className="rounded-3xl shadow-sm bg-gray-900 text-white w-[386] h-[84px] mt-[10px]">
                   <CardHeader className="justify-between">
                     <div className="flex gap-5 justify-between w-full">
-                      <div className="flex flex-col gap-1 items-start justify-center">
-                        <h5 className="text-small tracking-tight text-gray-400">
+                      <div className="flex flex-col items-start justify-center">
+                        <h5 className="text-small tracking-tight text-default-400">
                           Current max points
                         </h5>
-                        <h4 className="text-large font-bold">16,000</h4>
+                        <h4 className="text-large font-bold ">16,000</h4>
                       </div>
 
                       {/* Replace Avatar with RedCrossWithNumber */}
@@ -143,11 +144,11 @@ export default function ProductDetail() {
                     </div>
                   </CardHeader>
                 </Card>
-                <Card className="rounded-3xl shadow-sm bg-gray-900 text-white w-[386] h-[80px]">
+                <Card className="rounded-3xl shadow-sm bg-gray-900 text-white w-[386] h-[84px]">
                   <CardHeader className="justify-between">
                     <div className="flex gap-5">
-                      <div className="flex flex-col gap-1 items-start justify-center">
-                        <h5 className="text-small tracking-tight text-gray-400">
+                      <div className="flex flex-col items-start justify-center">
+                        <h5 className="text-small tracking-tight text-default-400">
                           Connect time for max points
                         </h5>
                         <h4 className="text-large font-bold">6 mins</h4>
@@ -157,15 +158,15 @@ export default function ProductDetail() {
                 </Card>
               </CardBody>
 
-              <CardFooter className="bg-black/40 p-4">
+              <CardFooter className="bg-black/40 p-4 w-full">
                 <Button
-                  className="w-[386] h-[80px] font-bold flex items-center bg-[#bffb4f] text-black pr-[147] mt-[20px]"
+                  className="w-[384px] h-[80px] font-bold flex items-center bg-[#bffb4f] text-xl text-black pr-[90]"
                   radius="full"
                   size="lg"
                 >
-                  <span className="absolute left-[0.3rem] bg-black text-white p-2 rounded-full transform rotate-[-45deg] flex items-center justify-center">
+                  <span className="absolute left-[0.5rem] bg-black text-white p-2 rounded-full transform rotate-[-45deg] flex items-center justify-center">
                     <svg
-                      className="h-8 w-8"
+                      className="h-12 w-12"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth={2}
