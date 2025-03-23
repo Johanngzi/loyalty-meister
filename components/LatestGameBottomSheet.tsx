@@ -1,66 +1,65 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, TouchEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Card, CardHeader, Button } from "@HeroUI/react";
 
 const LatestGameBottomSheet = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [startTouch, setStartTouch] = useState(0);
-  const [currentTouch, setCurrentTouch] = useState(0);
-  const [dragging, setDragging] = useState(false);
-  const [offset, setOffset] = useState(0);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [dragging, setDragging] = useState<boolean>(false);
+  const [translateY, setTranslateY] = useState<number>(0); // Use translateY state
+  const touchStartY = useRef<number>(0);
 
   const pathname = usePathname();
   const router = useRouter();
 
   if (pathname !== "/") return null;
 
-  // Handle touch start
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>): void => {
-    setStartTouch(e.touches[0].clientY);
+  const handleTouchStart = (e: TouchEvent<HTMLDivElement>): void => {
+    touchStartY.current = e.touches[0].clientY;
     setDragging(true);
   };
 
-  // Handle touch move
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>): void => {
-    if (!dragging) return;
-    const currentY = e.touches[0].clientY;
-
-    setCurrentTouch(currentY);
-    setOffset(currentY - startTouch);
+  const handleTouchMove = (e: TouchEvent<HTMLDivElement>): void => {
+    if (dragging) {
+      setTranslateY(e.touches[0].clientY - touchStartY.current);
+    }
   };
 
-  // Handle touch end
   const handleTouchEnd = () => {
-    const distance = currentTouch - startTouch;
+    if (dragging) {
+      const distance = translateY;
 
-    if (distance < -100) {
-      setIsOpen(true);
-      setIsCollapsed(false);
-    } else if (distance > 100 && isOpen) {
-      setIsCollapsed(true);
-    } else if (distance > 100 && isCollapsed) {
-      setIsOpen(false);
+      if (distance < -100) {
+        setIsOpen(true);
+        setIsCollapsed(false);
+      } else if (distance > 100 && isOpen) {
+        setIsCollapsed(true);
+      } else if (distance > 100 && isCollapsed) {
+        setIsOpen(false);
+      }
+
+      setDragging(false);
+      setTranslateY(0);
     }
+  };
 
-    setDragging(false);
-    setOffset(0);
+  const getBottomSheetHeight = (): string => {
+    if (isOpen) {
+      return "h-[124px] translate-y-0";
+    } else if (isCollapsed) {
+      return "h-[20px] translate-y-[100%]";
+    } else {
+      return "h-[100px] translate-y-[0%]";
+    }
   };
 
   return (
     <div>
-      {/* Bottom Sheet */}
       <div
-        className={`fixed bottom-0 left-0 w-full bg-white p-3 rounded-t-3xl rounded-b-2xl shadow-lg transition-all duration-300 ease-in-out transform ${
-          isOpen
-            ? "h-[124px] translate-y-0"
-            : isCollapsed
-              ? "h-[25px] translate-y-[80%]"
-              : "h-[1600px] translate-y-[92%]"
-        }`}
-        style={dragging ? { transform: `translateY(${offset}px)` } : {}}
+        className={`fixed bottom-0 left-0 w-full bg-white p-3 rounded-t-3xl shadow-lg transition-transform duration-300 ease-in-out transform z-[100] ${getBottomSheetHeight()}`}
+        style={{ transform: `translateY(${dragging ? translateY : 0}px)` }}
         onTouchEnd={handleTouchEnd}
         onTouchMove={handleTouchMove}
         onTouchStart={handleTouchStart}
@@ -104,14 +103,6 @@ const LatestGameBottomSheet = () => {
           </CardHeader>
         </Card>
       </div>
-
-      {/* Open/Close Button */}
-      <button
-        className="fixed bottom-17 left-1/2 transform -translate-x-1/2 bg-black-500 text-white py-2 px-6 rounded-full shadow-lg"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {isOpen ? "" : ""}
-      </button>
     </div>
   );
 };

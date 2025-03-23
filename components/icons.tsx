@@ -85,19 +85,3 @@ export function PlusThreeBadge() {
     </div>
   );
 }
-
-export function CrossIcon() {
-  return (
-    <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-[#bffb4f]">
-      <svg
-        fill="black"
-        height="32"
-        viewBox="0 0 24 24"
-        width="32"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M7.5 2l4.5 4.5L16.5 2l4.5 4.5L16.5 11l4.5 4.5L16.5 20l-4.5-4.5L7.5 20l-4.5-4.5L7.5 11 3 6.5 7.5 2z" />
-      </svg>
-    </div>
-  );
-}

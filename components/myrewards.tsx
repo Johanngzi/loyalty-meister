@@ -8,11 +8,30 @@ import {
   Button,
   CardFooter,
 } from "@HeroUI/react";
+import { useEffect } from "react";
 
 import { PlusThreeBadge } from "./icons";
 
+import { useNavbarHeight } from "@/app/contexts/NavbarHeightContext";
+import { useNavbarName } from "@/app/contexts/NavbarNameContext";
+
 export default function Myrewards() {
   const variants: Array<"light"> = ["light"];
+  const { setNavbarHeight, } = useNavbarHeight(); // Destructure only setNavbarHeight
+  const { setNavbarName, setNavbarNameClass } = useNavbarName(); // Destructure only setNavbarName
+
+  useEffect(() => {
+    setNavbarHeight("h-[100px]");
+    setNavbarName("Leaderboards");
+    setNavbarNameClass("text-center");
+
+    return () => {
+      setNavbarHeight("");
+      setNavbarName("SOCIAL CHANGE");
+      setNavbarNameClass(""); // Reset the class here
+    };
+  }, [setNavbarHeight, setNavbarName, setNavbarNameClass]);
+
 
   return (
     <div>
@@ -24,15 +43,15 @@ export default function Myrewards() {
           color={"primary"}
           radius="full"
           style={{
-            marginBottom: "0px",
-            marginTop: "-35px",
+            marginBottom: "4px",
+            marginTop: "-25px",
             fontSize: "3rem", // Increase font size directly
           }}
           variant={variant}
         >
           <Tab key="all" className="text-xl h-[45px] " title="all">
-            <div className="mb-4">
-              <h1 className="font-bold text-3xl">active games</h1>
+            <div className="mb-5``2`]">
+              <h1 className="font-bold textAZ                                                                                                            ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''-3xl">active games</h1>
             </div>
             <Card className="bg-black">
               <Card
@@ -71,13 +90,10 @@ export default function Myrewards() {
 
                   {/* Right side: Button */}
                   <div className="flex ml-auto">
-                    <Button
-                      className="h-17 flex justify-center items-center text-white w-auto bg-gray-900"
-                      radius="full"
-                    >
+                    <Button className="h-[80px] w-[80px] bg-transparent flex justify-center items-center text-white w-auto">
                       <span className="bg-black text-white p-2 rounded-full transform rotate-[-45deg] flex items-center justify-center">
                         <svg
-                          className="h-14 w-14"
+                          className="h-[60px] w-[60px]"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth={2}
@@ -151,12 +167,12 @@ export default function Myrewards() {
                   {/* Right side: Button */}
                   <div className="flex ml-auto">
                     <Button
-                      className="h-17 flex justify-center items-center text-white w-auto bg-gray-900"
+                      className="h-[80px] w-[80px] bg-transparent flex justify-center items-center text-white w-auto"
                       radius="full"
                     >
                       <span className="bg-black text-white p-2 rounded-full transform rotate-[-45deg] flex items-center justify-center">
                         <svg
-                          className="h-14 w-14"
+                          className="h-[60px] w-[60px]"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth={2}
@@ -235,12 +251,12 @@ export default function Myrewards() {
                   {/* Right side: Button */}
                   <div className="flex ml-auto">
                     <Button
-                      className="h-17 flex justify-center items-center text-white w-auto bg-gray-900"
+                      className="h-[80px] w-[80px] bg-transparent flex justify-center items-center text-white w-auto"
                       radius="full"
                     >
                       <span className="bg-black text-white p-2 rounded-full transform rotate-[-45deg] flex items-center justify-center">
                         <svg
-                          className="h-14 w-14"
+                          className="h-[60px] w-[60px]"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth={2}
@@ -323,12 +339,12 @@ export default function Myrewards() {
                   {/* Right side: Button */}
                   <div className="flex ml-auto">
                     <Button
-                      className="h-17 flex justify-center items-center text-white w-auto bg-gray-900"
+                      className="h-[80px] w-[80px] bg-transparent flex justify-center items-center text-white w-auto"
                       radius="full"
                     >
                       <span className="bg-black text-white p-2 rounded-full transform rotate-[-45deg] flex items-center justify-center">
                         <svg
-                          className="h-14 w-14"
+                          className="h-[60px] w-[60px]"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth={2}
@@ -401,12 +417,12 @@ export default function Myrewards() {
                   {/* Right side: Button */}
                   <div className="flex ml-auto">
                     <Button
-                      className="h-17 flex justify-center items-center text-white w-auto bg-gray-900"
+                      className="h-[80px] w-[80px] bg-transparent flex justify-center items-center text-white w-auto"
                       radius="full"
                     >
                       <span className="bg-black text-white p-2 rounded-full transform rotate-[-45deg] flex items-center justify-center">
                         <svg
-                          className="h-14 w-14"
+                          className="h-[60px] w-[60px]"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth={2}
@@ -486,12 +502,12 @@ export default function Myrewards() {
                   {/* Right side: Button */}
                   <div className="flex ml-auto">
                     <Button
-                      className="h-17 flex justify-center items-center text-white w-auto bg-gray-900"
+                      className="h-[80px] w-[80px] bg-transparent flex justify-center items-center text-white w-auto"
                       radius="full"
                     >
                       <span className="bg-black text-white p-2 rounded-full transform rotate-[-45deg] flex items-center justify-center">
                         <svg
-                          className="h-14 w-14"
+                          className="h-[60px] w-[60px]"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth={2}
@@ -533,3 +549,4 @@ export default function Myrewards() {
     </div>
   );
 }
+// Removed conflicting local declaration of useEffect

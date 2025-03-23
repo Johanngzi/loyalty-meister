@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, TouchEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -10,47 +10,66 @@ import {
   CardBody,
   CardFooter,
 } from "@HeroUI/react";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 import Map from "./map";
 
+import { useNavbarVisibility } from "@/app/contexts/NavbarVisibilityContext";
+
 export default function ProductDetail() {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(true);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [startTouch, setStartTouch] = useState(0);
-  const [dragging, setDragging] = useState(false);
-  const [offset, setOffset] = useState(0);
+  const [isOpen, setIsOpen] = useState<boolean>(true);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [dragging, setDragging] = useState<boolean>(false);
+  const [translateY, setTranslateY] = useState<number>(0); // Use translateY state
+  const touchStartY = useRef<number>(0);
+  const { setIsVisible } = useNavbarVisibility();
+  const { isVisible } = useNavbarVisibility(); // Get isVisible
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    setStartTouch(e.touches[0].clientY);
+  useEffect(() => {
+    setIsVisible(false);
+
+    return () => setIsVisible(true);
+  }, []);
+
+  const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
+    touchStartY.current = e.touches[0].clientY;
     setDragging(true);
   };
 
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    setOffset(e.touches[0].clientY - startTouch);
+  const handleTouchMove = (e: TouchEvent<HTMLDivElement>) => {
+    if (dragging) {
+      setTranslateY(e.touches[0].clientY - touchStartY.current);
+    }
   };
 
   const handleTouchEnd = () => {
-    const distance = currentTouch - startTouch;
+    if (dragging) {
+      const distance = translateY;
 
-    if (distance < -100) {
-      setIsOpen(true);
-      setIsCollapsed(false);
-    } else if (distance > 100 && isOpen) {
-      setIsCollapsed(true);
-    } else if (distance > 100 && isCollapsed) {
-      setIsOpen(false);
+      if (distance < -100) {
+        setIsOpen(true);
+        setIsCollapsed(false);
+      } else if (distance > 100 && isOpen) {
+        setIsCollapsed(true);
+      } else if (distance > 100 && isCollapsed) {
+        setIsOpen(false);
+      }
+
+      setDragging(false);
+      setTranslateY(0);
     }
-    setDragging(false);
-    setOffset(0);
   };
 
-  const cardData = [
-    { name: "Points Collected", username: "@JohnD", points: 5000 },
-    { name: "Double Coins", username: "@JaneS", text: "6:10 - 6:20" },
-    { name: "Points Collected", username: "@AlexB", points: 5000 },
-    { name: "Points Collected", username: "@ChrisB", points: 5000 },
-  ];
+  const getBottomSheetHeight = (): string => {
+    if (isOpen) {
+      return "h-[527px] translate-y-0";
+    } else if (isCollapsed) {
+      return "h-[80px] translate-y-[100%]";
+    } else {
+      return "h-[100px] translate-y-[0%]";
+    }
+  };
 
   return (
     <div>
@@ -58,22 +77,35 @@ export default function ProductDetail() {
         <Map />
       </div>
 
-      {/* Bottom Sheet Container */}
+      {/* Conditionally render the back button in a separate div */}
+      {!isVisible && (
+        <div
+          style={{
+            position: "absolute",
+            top: "80px",
+            left: "30px",
+            zIndex: 102,
+          }}
+        >
+          {" "}
+          {/* Adjust top, left as needed */}
+          <button
+            className="h-[52px] w-[52px] flex items-center justify-center bg-white rounded-full hover:bg-gray-200 transition duration-200 ease-in-out"
+            onClick={() => router.back()}
+          >
+            <ArrowLeftIcon className="h-[22px] w-[22px] stroke-[3] text-black" />
+          </button>
+        </div>
+      )}
+
       <div
-        className={`fixed bottom-0 left-0 w-full bg-black p-1 rounded-3xl shadow-lg transition-all duration-300 ease-in-out transform z-[100] ${
-          isOpen
-            ? "h-[527px] translate-y-0"
-            : isCollapsed
-              ? "h-[90px] translate-y-[80%]"
-              : "h-[100px] translate-y-[92%]"
-        }`}
-        style={dragging ? { transform: `translateY(${offset}px)` } : {}}
+        className={`fixed bottom-0 left-0 w-full bg-black p-1 rounded-3xl rounded-b-none shadow-lg transition-transform duration-300 ease-in-out transform z-[100] ${getBottomSheetHeight()}`}
+        style={{ transform: `translateY(${dragging ? translateY : 0}px)` }}
         onTouchEnd={handleTouchEnd}
         onTouchMove={handleTouchMove}
         onTouchStart={handleTouchStart}
       >
         <Card className="w-full shadow-sm bg-black h-full flex flex-col">
-          {/* Header */}
           <CardHeader className="justify-between h-[80px] relative">
             <Button
               className="w-full sm:w-64 flex flex-col gap-1 items-start justify-center bg-black text-white absolute left-0"
@@ -111,16 +143,41 @@ export default function ProductDetail() {
 
           <Divider />
 
-          {/* Scrollable Content */}
           <CardBody className="flex-1 overflow-y-auto max-h-[calc(100%-200px)">
-            {cardData.map((card, index) => (
+            {/* Keeping your CardBody content as it is */}
+            {[
+              {
+                name: "Points Collected",
+                username: "@JohnD",
+                points: 5000,
+                imageSrc: "IMG_3951.jpeg",
+              },
+              {
+                name: "Double Coins",
+                username: "@JaneS",
+                text: "6:10 - 6:20",
+                imageSrc: "IMG_3952.jpeg",
+              },
+              {
+                name: "Points Collected",
+                username: "@AlexB",
+                points: 5000,
+                imageSrc: "IMG_3951.jpeg",
+              },
+              {
+                name: "Points Collected",
+                username: "@ChrisB",
+                points: 5000,
+                imageSrc: "IMG_3951.jpeg",
+              },
+            ].map((card, index) => (
               <div key={index} className="m-0 p-0">
                 <Card className="w-full rounded-md shadow-sm bg-black border-white/20 text-white !h-[90px] flex items-center pt-[0] pb-0">
                   <CardHeader className="flex gap-3 h-full">
                     <Image
                       alt="heroui logo"
                       className="rounded-3xl h-[62px] w-[78px] object-cover"
-                      src="https://i.pinimg.com/236x/7a/53/b6/7a53b6ae10173f474bf201c41e0feea3.jpg"
+                      src={`${card.imageSrc}`}
                     />
                     <div className="flex justify-between items-center w-full">
                       <div>
@@ -141,14 +198,13 @@ export default function ProductDetail() {
                     </div>
                   </CardHeader>
                 </Card>
-                {/* Divider with no margin */}
                 <Divider className="border-t-2 border-white/40 my-1" />
               </div>
             ))}
           </CardBody>
 
-          {/* Sticky Footer */}
           <CardFooter className="w-full h-[109px] bg-black border-white/20 border-t rounded-t-3xl flex flex-col justify-start">
+            {/* Keeping your CardFooter content as it is */}
             <div className="flex justify-between items-start w-full px-3">
               <div className="flex flex-col items-start">
                 <p className="text-tiny text-default-400">Points</p>

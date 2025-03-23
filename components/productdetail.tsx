@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, TouchEvent, useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -9,48 +9,67 @@ import {
   Avatar,
   CardFooter,
 } from "@HeroUI/react";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
 
 import Map from "./map";
 import { RedCrossWithNumber } from "./icons";
 
-export default function ProductDetail() {
-  const [isOpen, setIsOpen] = useState(true);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [startTouch, setStartTouch] = useState(0);
-  const [currentTouch, setCurrentTouch] = useState(0);
-  const [dragging, setDragging] = useState(false);
-  const [offset, setOffset] = useState(0);
+import { useNavbarVisibility } from "@/app/contexts/NavbarVisibilityContext";
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>): void => {
-    setStartTouch(e.touches[0].clientY);
+export default function ProductDetail() {
+  const [isOpen, setIsOpen] = useState<boolean>(true);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [dragging, setDragging] = useState<boolean>(false);
+  const [translateY, setTranslateY] = useState<number>(0); // Use translateY state
+  const touchStartY = useRef<number>(0);
+  const { setIsVisible } = useNavbarVisibility();
+  const { isVisible } = useNavbarVisibility(); // Get isVisible
+  const router = useRouter(); // Get the router instance
+
+  useEffect(() => {
+    setIsVisible(false);
+
+    return () => setIsVisible(true);
+  }, []);
+
+  const handleTouchStart = (e: TouchEvent<HTMLDivElement>): void => {
+    touchStartY.current = e.touches[0].clientY;
     setDragging(true);
   };
 
-  interface TouchMoveEvent extends React.TouchEvent<HTMLDivElement> {
-    touches: React.TouchList;
-  }
-
-  const handleTouchMove = (e: TouchMoveEvent): void => {
-    if (!dragging) return;
-    const currentY = e.touches[0].clientY;
-
-    setCurrentTouch(currentY);
-    setOffset(currentY - startTouch);
+  const handleTouchMove = (e: TouchEvent<HTMLDivElement>): void => {
+    if (dragging) {
+      setTranslateY(e.touches[0].clientY - touchStartY.current);
+    }
   };
 
   const handleTouchEnd = () => {
-    const distance = currentTouch - startTouch;
+    if (dragging) {
+      const distance = translateY;
 
-    if (distance < -100) {
-      setIsOpen(true);
-      setIsCollapsed(false);
-    } else if (distance > 100 && isOpen) {
-      setIsCollapsed(true);
-    } else if (distance > 100 && isCollapsed) {
-      setIsOpen(false);
+      if (distance < -100) {
+        setIsOpen(true);
+        setIsCollapsed(false);
+      } else if (distance > 100 && isOpen) {
+        setIsCollapsed(true);
+      } else if (distance > 100 && isCollapsed) {
+        setIsOpen(false);
+      }
+
+      setDragging(false);
+      setTranslateY(0);
     }
-    setDragging(false);
-    setOffset(0);
+  };
+
+  const getBottomSheetHeight = (): string => {
+    if (isOpen) {
+      return "h-[461px] translate-y-0";
+    } else if (isCollapsed) {
+      return "h-[100px] translate-y-[100%]";
+    } else {
+      return "h-[100px] translate-y-[0%]";
+    }
   };
 
   return (
@@ -59,20 +78,35 @@ export default function ProductDetail() {
         <Map />
       </div>
 
+      {/* Conditionally render the back button in a separate div */}
+      {!isVisible && (
+        <div
+          style={{
+            position: "absolute",
+            top: "80px",
+            left: "20px",
+            zIndex: 102,
+          }}
+        >
+          {" "}
+          {/* Adjust top, left as needed */}
+          <button
+            className="h-[52px] w-[52px] flex items-center justify-center bg-white rounded-full hover:bg-gray-200 transition duration-200 ease-in-out"
+            onClick={() => router.back()}
+          >
+            <ArrowLeftIcon className="h-[22px] w-[22px] stroke-[3] text-black" />
+          </button>
+        </div>
+      )}
+
       <div
-        className={`fixed bottom-0 left-0 w-full bg-black p-3 rounded-t-3xl shadow-lg transition-all duration-300 ease-in-out transform z-[100] ${
-          isOpen
-            ? "h-[461px] translate-y-0"
-            : isCollapsed
-              ? "h-[20vh] translate-y-[80%]"
-              : "h-[200px]  translate-y-[50%]"
-        }`}
-        style={dragging ? { transform: `translateY(${offset}px)` } : {}}
+        className={`fixed bottom-0 left-0 w-full bg-black p-3 rounded-t-3xl shadow-lg transition-transform duration-300 ease-in-out transform z-[100] ${getBottomSheetHeight()}`}
+        style={{ transform: `translateY(${dragging ? translateY : 0}px)` }}
         onTouchEnd={handleTouchEnd}
         onTouchMove={handleTouchMove}
         onTouchStart={handleTouchStart}
       >
-        <Card className="w-full  rounded-none shadow-sm bg-black">
+        <Card className="w-full rounded-none shadow-sm bg-black">
           <CardHeader className="justify-between">
             <div className="flex gap-5">
               <Avatar
@@ -82,7 +116,7 @@ export default function ProductDetail() {
                 size="md"
                 src="https://i.pinimg.com/236x/7a/53/b6/7a53b6ae10173f474bf201c41e0feea3.jpg"
               />
-              <div className="flex flex-col  items-start justify-center">
+              <div className="flex flex-col items-start justify-center">
                 <h4 className="text-3xl font-bold leading-[1.1]">Starbucks</h4>
                 {!isCollapsed && (
                   <h5 className="text-small tracking-tight text-default-400">
@@ -92,7 +126,7 @@ export default function ProductDetail() {
               </div>
             </div>
             <Button
-              className="relative flex items-center justify-center gap-4 bg-black text-white"
+              className="relative flex items-center justify-center bg-transparent text-white"
               radius="full"
               size="lg"
               onPress={() => {
@@ -138,8 +172,6 @@ export default function ProductDetail() {
                         </h5>
                         <h4 className="text-large font-bold ">16,000</h4>
                       </div>
-
-                      {/* Replace Avatar with RedCrossWithNumber */}
                       <RedCrossWithNumber />
                     </div>
                   </CardHeader>

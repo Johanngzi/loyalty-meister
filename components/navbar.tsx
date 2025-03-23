@@ -6,11 +6,20 @@ import {
   Navbar as HeroUINavbar,
   NavbarContent,
   NavbarBrand,
+  DropdownItem,
+  DropdownTrigger,
+  Dropdown,
+  DropdownMenu,
+  Avatar,
+  AvatarIcon,
 } from "@HeroUI/react";
-import { ButtonGroup } from "@heroui/button";
 import NextLink from "next/link";
-import { User } from "@heroui/user";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
+
+import { useNavbarHeight } from "@/app/contexts/NavbarHeightContext"; // Import the context hook
+import { useNavbarName } from "@/app/contexts/NavbarNameContext";
+import { useNavbarVisibility } from "@/app/contexts/NavbarVisibilityContext";
 
 export const Navbar = () => {
   const [user, setUser] = useState<{ name: string; avatarSrc: string } | null>(
@@ -19,6 +28,9 @@ export const Navbar = () => {
   const [isUserLoaded, setIsUserLoaded] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const { navbarHeight } = useNavbarHeight(); // Correct usage here
+  const { navbarName, navbarNameClass } = useNavbarName(); // Use the context hook
+  const { isVisible } = useNavbarVisibility(); // Get the visibility state
 
   // Restore user from localStorage
   useEffect(() => {
@@ -30,10 +42,8 @@ export const Navbar = () => {
     setIsUserLoaded(true);
   }, []);
 
-  // Define the pages where the navbar should be hidden completely
-  const hideNavbarOn = ["/local-game/", "/login"];
-
   // Listen for storage changes
+
   useEffect(() => {
     const handleStorageChange = () => {
       const updatedUser = localStorage.getItem("user");
@@ -52,115 +62,84 @@ export const Navbar = () => {
     router.push("/login");
   };
 
-  const getNavbarName = () => {
-    switch (pathname) {
-      case "/":
-        return (
-          <div className="flex items-start flex-col text-left pt-20">
-            <span className="text-lg font-bold text-black">SOCIAL</span>
-            <span className="text-lg font-bold text-black">CHANGE</span>
-          </div>
-        );
-      case "/prizes-and-cash":
-        return "Social Cash";
-      case "/myrewards":
-        return "Leaderboards";
-      case "/totalhistory":
-        return "Social Cash";
-      default:
-        return "SOCIAL CHANGE";
-    }
-  };
-
-  // If the current page is in hideNavbarOn, do not render the navbar
-  if (hideNavbarOn.includes(pathname)) return null;
-
-  // Special case: Show only the back arrow on /area-and-points
-  if (pathname === "/area-and-points" || pathname === "/local-game") {
-    return (
-      <div className="relative">
-        <button
-          className="flex items-center justify-center bg-white rounded-full p-2 hover:bg-gray-200 transition duration-200 ease-in-out shadow-md z-50 absolute top-4 left-4"
-          onClick={() => router.back()}
-        >
-          <ArrowLeftIcon className="h-6 w-6 text-black" />
-        </button>
-      </div>
-    );
-  }
+  if (!isVisible) return null; // Conditionally render the navbar
 
   return (
     <HeroUINavbar
-      className={`bg-[#bffb4f] ${
-        pathname === "/"
-          ? "h-[17vh]"
-          : pathname === "/prizes-and-cash"
-            ? "h-[232px]"
-            : pathname === "/myrewards"
-              ? "h-[152px] flex-grow-0"
-              : "h-[30px] flex-grow-0"
-      } text-black px-4 py-3 shadow-md flex justify-between items-center relative overflow-visible rounded-2xl`}
+      className={`bg-[#bffb4f] text-black shadow-md flex justify-between relative overflow-visible rounded-b-3xl ${navbarHeight}`}
     >
       {/* Left Side - Brand */}
-      <NavbarContent className="flex items-center ">
-        {/* Back Arrow - Show only when not on the homepage */}
-        {pathname !== "/" && (
-          <button
-            className="flex items-center justify-center bg-white rounded-full p-2 hover:bg-gray-200 transition duration-200 ease-in-out z-50 absolute top-4 left-4"
-            onClick={() => router.back()}
-          >
-            <ArrowLeftIcon className="h-6 w-6 mr-2" />
-          </button>
-        )}
-        <NavbarBrand>
-          <div
-            className={`absolute ${
-              pathname === "/"
-                ? "left-2" // Align to the left on the homepage
-                : pathname === "/prizes-and-cash" || pathname === "/myrewards"
-                  ? "left-[50%] transform -translate-x-[50%]" // Centering on other pages
-                  : "left-1/2 transform -translate-x-1/2"
-            }`}
-          >
-            <NextLink className="text-lg font-bold text-black" href="/">
-              <span>{getNavbarName()}</span>
-            </NextLink>
+      <NavbarContent className="flex items-center">
+        {pathname === "/" && (
+          <div className="flex h-[62px] w-[126px] items-center justify-start">
+            <Image
+              alt="Logo"
+              height={62}
+              src="/Image 10.03.25 at 09.42 2.jpg"
+              width={126}
+            />
           </div>
+        )}
+        {pathname !== "/" && (
+          <div className="flex items-center">
+            <button
+              className="h-[52px] w-[52px] flex items-center justify-center bg-white rounded-full hover:bg-gray-200 transition duration-200 ease-in-out z-50 top-4"
+              onClick={() => router.back()}
+            >
+              <ArrowLeftIcon className="h-[22px] w-[22px] stroke-[3] text-black" />
+            </button>
+          </div>
+        )}
+      </NavbarContent>
+
+      {/* Center Side - Navbar Name */}
+      <NavbarContent className="flex items-center justify-center w-full">
+        <NavbarBrand>
+          {pathname !== "/" && (
+            <div>
+              <NextLink className="text-lg font-bold text-black" href="/">
+                <span className={navbarNameClass}>{navbarName}</span>
+              </NextLink>
+            </div>
+          )}
         </NavbarBrand>
       </NavbarContent>
 
       {/* Right Side - Theme Switch, Login, Avatar */}
-      <NavbarContent className="flex items-center gap-3 w-full justify-end pt-20">
-        {pathname === "/" &&
-          isUserLoaded && ( // Ensure user state is loaded before rendering UI
-            <>
-              {/* Right side: $154 + Avatar */}
-              <div className="flex items-center gap-2">
-                <div className="flex items-center justify-center w-[106px] h-[53px] bg-white text-black rounded-full font-bold text-sm">
-                  $154
-                </div>
-
-                {user ? (
-                  <User
-                    avatarProps={{
-                      src: user.avatarSrc,
-                      className: "h-[53px] w-[53px] object-cover",
-                    }}
-                    className="h-[53px] w-[53px]"
-                    name={user.name}
-                    onClick={handleLogout}
-                  />
-                ) : (
-                  <ButtonGroup
-                    className="bg-blue-500 text-white px-3 py-2 rounded-lg text-sm"
-                    onClick={() => router.push("/login")}
-                  >
-                    Login
-                  </ButtonGroup>
-                )}
+      <NavbarContent className="flex items-center justify-end">
+        {pathname === "/" && isUserLoaded && (
+          <>
+            <div className="flex gap-2">
+              <div className="flex items-center justify-center w-[106px] h-[53px] bg-white text-black rounded-full font-bold text-2xl">
+                $154
               </div>
-            </>
-          )}
+              <Dropdown placement="bottom-end">
+                <DropdownTrigger>
+                  <Avatar
+                    showFallback
+                    as="button"
+                    classNames={{ base: "h-[53px] w-[53px]" }}
+                    icon={<AvatarIcon />}
+                    src="https://images.unsplash.com/broken"
+                  />
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Profile Actions" variant="flat">
+                  <DropdownItem key="profile" className="h-14 gap-2">
+                    <p className="font-semibold">Signed in as</p>
+                    <p className="font-semibold">gazabon.johann@gmail.com</p>
+                  </DropdownItem>
+                  <DropdownItem
+                    key="logout"
+                    color={"primary"}
+                    onPress={handleLogout}
+                  >
+                    Log Out
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          </>
+        )}
       </NavbarContent>
     </HeroUINavbar>
   );

@@ -16,8 +16,8 @@ export default function Prizesandcash({ className = "" }: PrizesandcashProps) {
         />
       </CardBody>
       <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-        <p className="text-tiny lowerletter text-default-500">win prizes &</p>
-        <p className="text-tiny lowerletter text-default-500">social cash</p>
+        <p className="text-small lowerletter text-default-500">win prizes &</p>
+        <p className="text-small lowerletter text-default-500">social cash</p>
       </CardHeader>
     </Card>
   );

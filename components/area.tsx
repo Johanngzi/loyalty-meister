@@ -17,9 +17,9 @@ export default function Area({ className = "" }: AreaProps) {
         />
       </CardBody>
       <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-        <p className="text-tiny lowerletter text-default-500">explore</p>
-        <p className="text-tiny lowerletter text-default-500">your area &</p>
-        <p className="text-tiny lowerletter text-default-500">earn points</p>
+        <p className="text-small lowerletter text-default-500">explore</p>
+        <p className="text-small lowerletter text-default-500">your area &</p>
+        <p className="text-small lowerletter text-default-500">earn points</p>
       </CardHeader>
     </Card>
   );

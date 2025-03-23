@@ -13,8 +13,8 @@ export default function LocalGame({ className = "" }: LocalGameProps) {
         <UserPlusIcon className="text-[#bffb4f]" width={75} />
       </CardBody>
       <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-        <p className="text-tiny lowerletter text-default-500">join a</p>
-        <p className="text-tiny lowerletter text-default-500">local game</p>
+        <p className="text-small lowerletter text-default-500">join a</p>
+        <p className="text-small lowerletter text-default-500">local game</p>
       </CardHeader>
     </Card>
   );

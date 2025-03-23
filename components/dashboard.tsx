@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useEffect } from "react";
 
 import DashBoardTab from "./dashboardtab";
 import LatestGameBottomSheet from "./LatestGameBottomSheet";
@@ -7,11 +8,25 @@ import LatestGameBottomSheet from "./LatestGameBottomSheet";
 import LocalGame from "@/components/localGame";
 import Area from "@/components/area";
 import PrizesandCash from "@/components/prizesandCash";
+import { useNavbarHeight } from "@/app/contexts/NavbarHeightContext";
 
 export default function Dashboard() {
+  // State to store navbar height based on screen width
+  const { setNavbarHeight } = useNavbarHeight(); // Destructure only setNavbarHeight
+
+  useEffect(() => {
+    // Set the navbar height to 320px regardless of screen width
+    setNavbarHeight("h-[100px]");
+
+    // Clean up function to reset the height when the component unmounts
+    return () => {
+      setNavbarHeight("");
+    };
+  }, [setNavbarHeight]);
+
   return (
     <div>
-      <div className="mb-9">
+      <div className="mb-8">
         <h1 className="font-bold text-3xl">how to play</h1>
       </div>
 
